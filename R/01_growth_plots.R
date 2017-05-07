@@ -16,6 +16,11 @@ ldata2 <- ldata %>%
 	mutate(light_level = ifelse(replicate %in% c("5", "12", "8", "9"), "med_low_light", light_level)) %>%
 	mutate(light_level = ifelse(replicate %in% c("14", "13", "16", "15"), "low_light", light_level)) %>% 
 	mutate(start_time = ymd_hms(start_time)) %>% 
+	mutate(light = NA) %>% 
+	mutate(light = ifelse(light_level == "high_light", 140, light)) %>% 
+	mutate(light = ifelse(light_level == "med_high_light", 80, light)) %>% 
+	mutate(light = ifelse(light_level == "med_low_light", 50, light)) %>%
+	mutate(light = ifelse(light_level == "low_light", 30, light)) %>% 
 	separate(start_time, into = c("date", "time"), sep = " ", remove = FALSE) %>% 
 	mutate(date = ymd(date))
 
@@ -32,8 +37,8 @@ ldata3 <- ldata2 %>%
 
 
 ldata3 %>% 
-	ggplot(aes(x = start_time, y = cell_density, color = light_level)) + geom_point(size = 3) +
-	facet_wrap( ~ light_level) + theme_bw() + ylab("population abundance (cells/ml)") + xlab("date")
+	ggplot(aes(x = start_time, y = cell_density, color = light_level, group = replicate)) + geom_point(size = 3) +
+	facet_wrap( ~ light) + theme_bw() + ylab("population abundance (cells/ml)") + xlab("date") + geom_line()
 
 
 growth <- ldata3 %>% 
@@ -43,7 +48,6 @@ growth <- ldata3 %>%
 							control = nls.control(maxiter=100, minFactor=1/204800000)))) 
 
 
-growth$light_level <- ordered(c("low_light", "med_low_light", "med_high_light", "high_light"))
 
 growth %>%
 	mutate(light = NA) %>% 

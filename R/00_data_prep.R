@@ -21,7 +21,10 @@ library(stringr)
 cell_files <- c(list.files("data-raw/flowcam-summaries-apr30", full.names = TRUE),
 								list.files("data-raw/flowcam-summaries-may01", full.names = TRUE),
 								list.files("data-raw/flowcam-summaries-may02", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may03", full.names = TRUE))
+								list.files("data-raw/flowcam-summaries-may03", full.names = TRUE),
+								list.files("data-raw/flowcam-summaries-may04", full.names = TRUE),
+								list.files("data-raw/flowcam-summaries-may05", full.names = TRUE),
+								list.files("data-raw/flowcam-summaries-may06", full.names = TRUE))
 
 
 names(cell_files) <- cell_files %>% 
