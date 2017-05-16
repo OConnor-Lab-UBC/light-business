@@ -1,4 +1,5 @@
 ### code for bringing in flow cam data for light project
+## 5C experiment
 
 # load libraries ----------------------------------------------------------
 
@@ -18,15 +19,8 @@ library(stringr)
 
 #### Step 2: create a list of file names for each of the summaries ####
 
-cell_files <- c(list.files("data-raw/flowcam-summaries-apr30", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may01", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may02", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may03", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may04", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may05", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may06", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may08", full.names = TRUE),
-								list.files("data-raw/flowcam-summaries-may12", full.names = TRUE))
+cell_files <- c(list.files("data-raw/5C-experiment/flowcam-summaries-may04", full.names = TRUE),
+								list.files("data-raw/5C-experiment/flowcam-summaries-may15", full.names = TRUE))
 
 
 names(cell_files) <- cell_files %>% 
@@ -36,7 +30,7 @@ names(cell_files) <- cell_files %>%
 #### Step 3: read in all the files!
 
 all_cells <- map_df(cell_files, read_csv, col_names = FALSE, .id = "file_name")
-
+all_cells[[1]]
 
 
 #### Step 4: pull out just the data we want, do some renaming etc.
@@ -44,11 +38,10 @@ all_cells <- map_df(cell_files, read_csv, col_names = FALSE, .id = "file_name")
 TT_cells <- all_cells %>% 
 	rename(obs_type = X1,
 				 value = X2) %>% 
-	filter(obs_type %in% c("List File", "Start Time", "Particles / ml", "Volume (ABD)")) %>%
+	filter(obs_type %in% c("List File", "Start Time", "Particles / ml")) %>%
 	spread(obs_type, value) %>% 
 	separate(`List File`, into = c("replicate", "sample_day"), sep = "[:punct:]") %>% 
 	rename(start_time = `Start Time`,
-				 cell_density = `Particles / ml`,
-				 cell_volume = `Volume (ABD)`) 
+				 cell_density = `Particles / ml`) 
 
-write_csv(TT_cells, "data-processed/TT_cells.csv")
+write_csv(TT_cells, "data-processed/5C_TT_cells.csv")
